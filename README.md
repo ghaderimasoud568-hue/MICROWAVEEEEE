@@ -1,0 +1,1 @@
+This is a simple microwave game simulater. It is insipired by a horror game, which i forgot its name. But all you have to do is pick a food you want to warm up and protect it while it warms up. Its not much but its simple and has some uniqe interactions along with it. How long can you last?? How many points will you get?
