@@ -1,14 +1,22 @@
-
+#include <chrono>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include <thread>
 #include <vector>
 using namespace std;
 
 bool gambleSuccess(int chancePercent) { return (rand() % 100) < chancePercent; }
 
 int main() {
+    int smokeFails = 0;
+    bool foughtPigeon = false;
+    bool foughtAlien = false;
+    bool foughtRobber = false;
+    bool foughtRiddler = false;
+    bool foughtSpark = false;
+
     srand(time(0));
     int cookTime = 7, timer = 0, points = 0, burn = 0, chaos = 0, lives = 3;
     string food;
@@ -48,7 +56,7 @@ int main() {
             cout << "| Pigeon appears! Type 'shoo' to scare it: ";
             string input; cin >> input;
             if (input == "shoo") {
-                if (gambleSuccess(80)) { cout << "Pigeon flew away! +5 points\n"; points += 5; }
+                if (gambleSuccess(80)) { cout << "Pigeon flew away! +5 points\n"; points += 5; foughtPigeon = true; }
                 else { cout << "Pigeon dodged! +2 burn\n"; burn += 2; }
             }
             else { cout << "Pigeon stays! +2 burn\n"; burn += 2; }
@@ -67,7 +75,7 @@ int main() {
         else if (eventChance < 10) {
             cout << "| Alien appears! 1) Attack 2) Flee : ";
             int choice; cin >> choice;
-            if (choice == 1) { if (gambleSuccess(50)) { cout << "Alien defeated! +10 points\n"; points += 10; } else { cout << "Alien hit you! +4 burn\n"; burn += 4; } }
+            if (choice == 1) { if (gambleSuccess(50)) { cout << "Alien defeated! +10 points\n"; points += 10; foughtAlien = true; } else { cout << "Alien hit you! +4 burn\n"; burn += 4; } }
             else if (choice == 2) { if (gambleSuccess(70)) { cout << "Escaped! +3 points\n"; points += 3; } else { cout << "Failed escape! +2 burn\n"; burn += 2; } }
             chaos++;
         }
@@ -77,7 +85,7 @@ int main() {
             int idx = rand() % riddles.size();
             cout << "| Riddler: " << riddles[idx] << " Answer: ";
             string ans; cin >> ans;
-            if (ans == rAnswers[idx]) { cout << "Correct! +10 points\n"; points += 10; }
+            if (ans == rAnswers[idx]) { cout << "Correct! +10 points\n"; points += 10; foughtRiddler = true; }
             else { cout << "Wrong! +1 cook time\n"; cookTime++; }
             chaos++;
         }
@@ -86,16 +94,16 @@ int main() {
         else if (eventChance < 14) {
             cout << "| Robber appears! Type 'block' or 'grab': ";
             string act; cin >> act;
-            if (act == "block") { if (gambleSuccess(70)) { cout << "Blocked! +5 points\n"; points += 5; } else { cout << "Hit! +3 burn\n"; burn += 3; } }
+            if (act == "block") { if (gambleSuccess(70)) { cout << "Blocked! +5 points\n"; points += 5; foughtRobber = true; } else { cout << "Hit! +3 burn\n"; burn += 3; } }
             else if (act == "grab") { cout << "You try grabbing! +2 burn\n"; burn += 2; }
             chaos++;
         }
 
         // --- Smoke ---
-        else if (eventChance < 17) { cout << "| Smoke fills the microwave! Type 'fan': "; string s; cin >> s; if (s == "fan") { cout << "Cleared! +3 points\n"; points += 3; } else { cout << "Burn! +3\n"; burn += 3; } chaos++; }
+        else if (eventChance < 17) { cout << "| Smoke fills the microwave! Type 'fan': "; string s; cin >> s; if (s == "fan") { cout << "Cleared! +3 points\n"; points += 3; smokeFails++; } else { cout << "Burn! +3\n"; burn += 3; } chaos++; }
 
         // --- Sparks ---
-        else if (eventChance < 19) { cout << "| Sparks! Type 'extinguish': "; string s; cin >> s; if (s == "extinguish") { cout << "Safe! +3 points\n"; points += 3; } else { cout << "Burn! +3\n"; burn += 3; } chaos++; }
+        else if (eventChance < 19) { cout << "| Sparks! Type 'extinguish': "; string s; cin >> s; if (s == "extinguish") { cout << "Safe! +3 points\n"; points += 3; foughtSpark = true; } else { cout << "Burn! +3\n"; burn += 3; } chaos++; }
 
         // --- Flying Toast ---
         else if (eventChance < 21) { cout << "| Flying Toast! Type 'catch': "; string s; cin >> s; if (s == "catch") { cout << "Caught! +4 points\n"; points += 4; } else { cout << "Missed! +2 burn\n"; burn += 2; } chaos++; }
@@ -191,51 +199,51 @@ int main() {
         {
             system("cls"); // wipe screen
             cout << "Wait...\n";
-            Sleep(1500);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1500));
             cout << "Something is wrong.\n";
-            Sleep(2000);
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
             cout << "\nYou weren't supposed to survive THAT easily.\n";
-            Sleep(2500);
+            std::this_thread::sleep_for(std::chrono::milliseconds(2500));
             cout << "\n...Who told you the rules?\n";
-            Sleep(2500);
+            std::this_thread::sleep_for(std::chrono::milliseconds(2500));
 
             system("cls");
             cout << "SYSTEM RECHECKING PLAYER HISTORY...\n";
-            Sleep(2000);
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
             cout << "\nReviewing events:";
-            Sleep(1200);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1200));
 
             cout << "\n - Pigeon encounter: " << (foughtPigeon ? "YES" : "NO");
             cout << "\n - Alien encounter: " << (foughtAlien ? "YES" : "NO");
             cout << "\n - Robber encounter: " << (foughtRobber ? "YES" : "NO");
             cout << "\n - Riddler encounter: " << (foughtRiddler ? "YES" : "NO");
             cout << "\n - Spark event: " << (foughtSpark ? "YES" : "NO");
-            Sleep(2500);
+            std::this_thread::sleep_for(std::chrono::milliseconds(2500));
 
             cout << "\n\nYou really thought this was a *microwave simulator*?\n";
-            Sleep(3000);
+            std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 
             system("cls");
             cout << "PLAYER: SETH NORMAN.\n"; // personalization trick
-            Sleep(2000);
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
-            cout << "\nI’ve been watching every choice you made.\n";
-            Sleep(2000);
+            cout << "\nIÂ’ve been watching every choice you made.\n";
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
             cout << "Even the mistakes you hid.\n";
-            Sleep(2000);
-            cout << "Even the ones you didn’t notice.\n";
-            Sleep(2500);
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+            cout << "Even the ones you didnÂ’t notice.\n";
+            std::this_thread::sleep_for(std::chrono::milliseconds(2500));
 
             system("cls");
             cout << "YOUR SCORE: -999999\n";
             cout << "LIVES: 0\n";
             cout << "STATUS: TERMINATED\n";
-            Sleep(3000);
+            std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 
             cout << "\nDON'T TRUST NO ONE.\n";
             cout << "Not even the one writing this.\n";
-            Sleep(3500);
+            std::this_thread::sleep_for(std::chrono::milliseconds(3500));
 
             exit(0); // instantly ends the program
         }
